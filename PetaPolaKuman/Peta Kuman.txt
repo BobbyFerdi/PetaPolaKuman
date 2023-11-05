@@ -1,0 +1,7 @@
+S -> 76-100 (green)
+I -> 51-75 (yellow)
+R -> <=50 (red)
+
+grouping by organism, specimen type -> avg
+per sheet per specimen type
+number of isolate -> jumlah data
