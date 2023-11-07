@@ -16,7 +16,7 @@ public static class Extensions
         for (var i = 0; i < columnName.Length; i++)
         {
             sum *= 26;
-            sum += (columnName[i] - 'A' + 1);
+            sum += columnName[i] - 'A' + 1;
         }
 
         return sum;
@@ -25,4 +25,14 @@ public static class Extensions
     public static string GetCellValue(this IXLRangeRow row, string cell) => row.Cell(cell.ExcelColumnNameToNumber()).GetString();
 
     public static string GetCellValue(this IXLRangeRow row, int cellNumber) => row.Cell(cellNumber).GetString();
+
+    public static IXLCell SetCellValue(this IXLWorksheet sheet, string cell, string value) => sheet.Cell(cell).SetValue(value);
+
+    public static IXLCell SetCellValue(this IXLWorksheet sheet, int row, int cell, string value) => sheet.Cell(row, cell).SetValue(value);
+
+    public static IXLCell SetCellValue(this IXLWorksheet sheet, string cell, double value) => sheet.Cell(cell).SetValue(value);
+
+    public static IXLCell SetCellValue(this IXLWorksheet sheet, int row, int cell, double value) => sheet.Cell(row, cell).SetValue(value);
+
+    public static List<string> DistinctAndOrder(this List<string> input) => input.DistinctBy(o => o.ToLower()).OrderBy(o => o).ToList();
 }
