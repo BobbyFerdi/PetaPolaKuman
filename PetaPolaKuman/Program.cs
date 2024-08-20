@@ -12,7 +12,7 @@ var app = builder.BuildServiceProvider();
 var logger = app.GetService<ILogger<Program>>();
 var fileName = "..\\..\\..\\source.xlsx";
 var targetFileName = $"Peta Pola Kuman RSMA 2";
-var targetFilePath = $"{Directory.GetCurrentDirectory()}\\{targetFileName}.xlsx";
+var targetFilePath = $"..\\..\\..\\{targetFileName}.xlsx";
 var year = 2022;
 var antibioticsLineNumber = 7;
 var antibioticsStartColumn = "M".ExcelColumnNameToNumber();
@@ -96,7 +96,7 @@ foreach (var specimen in baseData.Specimens)
 
     var specimenRowCounter = 1;
     var specimenCellCounter = 1;
-    var specimenSheet = resultWorkbook.Worksheets.Add(specimen);
+    var specimenSheet = resultWorkbook.Worksheets.Add(specimen.Replace("/", ""));
     specimenSheet.SetCellValue(specimenRowCounter, specimenCellCounter, $"PETA POLA KUMAN {year}");
     specimenRowCounter++;
     specimenSheet.SetCellValue(specimenRowCounter, specimenCellCounter, "Organism");
@@ -186,7 +186,11 @@ foreach (var specimen in baseData.Specimens)
     {
         var specimenLocationRowCounter = 1;
         var specimenLocationCellCounter = 1;
-        var specimenLocationSheet = resultWorkbook.Worksheets.Add($"{specimen}-{location}");
+        var sheetName = $"{specimen.Replace("/", "")}-{location}";
+
+        if (sheetName.Length > 31) sheetName = sheetName[..31];
+
+        var specimenLocationSheet = resultWorkbook.Worksheets.Add(sheetName);
         specimenLocationSheet.SetCellValue(specimenLocationRowCounter, specimenLocationCellCounter, $"PETA POLA KUMAN {year}");
         specimenLocationRowCounter++;
         specimenLocationSheet.SetCellValue(specimenLocationRowCounter, specimenLocationCellCounter, "Organism");
