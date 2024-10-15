@@ -35,4 +35,12 @@ public static class Extensions
     public static IXLCell SetCellValue(this IXLWorksheet sheet, int row, int cell, double value) => sheet.Cell(row, cell).SetValue(value);
 
     public static List<string> DistinctAndOrder(this List<string> input) => input.DistinctBy(o => o.ToLower()).OrderBy(o => o).ToList();
+
+    public static string OrganismTranslator(this string input) => input.ToLower() switch
+    {
+        "staphylococcus hemolyticus" => "Staphylococcus haemolyticus",
+        "eschericia coli" => "Escherichia coli",
+        "staphyloccous hominis" => "Staphylococcus hominis",
+        _ => input,
+    };
 }

@@ -11,22 +11,15 @@ builder.AddLibrary();
 var app = builder.BuildServiceProvider();
 var logger = app.GetService<ILogger<Program>>();
 var fileName = "..\\..\\..\\source.xlsx";
-var targetFileName = $"Peta Pola Kuman RSMA 2";
+var year = DateTime.Now.Year - 1;
+var targetFileName = $"Peta Pola Kuman RSMA {year}";
 var targetFilePath = $"..\\..\\..\\{targetFileName}.xlsx";
-var year = 2022;
 var antibioticsLineNumber = 7;
 var antibioticsStartColumn = "M".ExcelColumnNameToNumber();
-var antibioticsEndColumn = "BA".ExcelColumnNameToNumber();
+var antibioticsEndColumn = "BC".ExcelColumnNameToNumber();
 var sourceWorkbook = new XLWorkbook(fileName);
 var antibioticsRow = sourceWorkbook.Worksheet(1).RangeUsed().RowsUsed().Skip(antibioticsLineNumber - 1).FirstOrDefault();
-var baseData = new BaseData
-{
-    Antibiotics = new List<string>(),
-    Records = new List<Record>(),
-    Organisms = new List<string>(),
-    Locations = new List<string>(),
-    Specimens = new List<string>()
-};
+var baseData = new BaseData();
 var resistanceRates = new ResistanceRates();
 
 for (var a = antibioticsStartColumn; a <= antibioticsEndColumn; a++)
@@ -34,7 +27,7 @@ for (var a = antibioticsStartColumn; a <= antibioticsEndColumn; a++)
     baseData.Antibiotics.Add(antibioticsRow.GetCellValue(a));
 }
 
-var recordsStartLineNumber = 11;
+var recordsStartLineNumber = 10;
 var recordsRows = sourceWorkbook.Worksheet(1).RangeUsed().RowsUsed().Skip(recordsStartLineNumber - 1);
 var locationColumn = "H";
 var specimenColumn = "I";
@@ -44,9 +37,9 @@ foreach (var recordsRow in recordsRows)
 {
     var organism = recordsRow.GetCellValue(organismColumn).Trim();
 
-    if (organism.ToLower() == "negatif") continue;
-    if (organism.ToLower() == "staphylococcus hemolyticus") organism = "Staphylococcus haemolyticus";
+    if (organism.ToLower().StartsWith("negatif")) continue;
 
+    organism = organism.OrganismTranslator();
     var specimen = recordsRow.GetCellValue(specimenColumn).Trim();
 
     if (specimen.Contains('(')) specimen = specimen.Split('(', ')')[1].ToTitleCase();
@@ -56,8 +49,7 @@ foreach (var recordsRow in recordsRows)
     {
         Location = location,
         Specimen = specimen,
-        Organism = organism,
-        ResistanceRates = new List<ResistanceRate>()
+        Organism = organism
     };
 
     if (!baseData.Organisms.Contains(organism)) baseData.Organisms.Add(organism);
@@ -123,7 +115,7 @@ foreach (var specimen in baseData.Specimens)
 
     foreach (var organism in baseData.Organisms)
     {
-        var organismCounter = specimenData.Where(s => s.Organism.ToLower() == organism.ToLower()).Sum(s => s.ResistanceRates.Count);
+        var organismCounter = specimenData.Count(s => s.Organism.ToLower() == organism.OrganismTranslator().ToLower());//.Sum(s => s.ResistanceRates.Count);
 
         if (organismCounter > 0)
             specimenSheet
@@ -216,7 +208,7 @@ foreach (var specimen in baseData.Specimens)
 
         foreach (var organism in baseData.Organisms)
         {
-            var organismCounter = specimenLocationData.Where(s => s.Organism.ToLower() == organism.ToLower()).Sum(s => s.ResistanceRates.Count);
+            var organismCounter = specimenLocationData.Count(s => s.Organism.ToLower() == organism.ToLower());//.Sum(s => s.ResistanceRates.Count);
 
             if (organismCounter > 0)
                 specimenLocationSheet
