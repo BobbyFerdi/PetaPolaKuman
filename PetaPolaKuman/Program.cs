@@ -10,11 +10,11 @@ var builder = new ServiceCollection();
 builder.AddLibrary();
 var app = builder.BuildServiceProvider();
 var logger = app.GetService<ILogger<Program>>();
-var fileName = "..\\..\\..\\source.xlsx";
+const string fileName = @"..\..\..\source.xlsx";
 var year = DateTime.Now.Year - 1;
 var targetFileName = $"Peta Pola Kuman RSMA {year}";
-var targetFilePath = $"..\\..\\..\\{targetFileName}.xlsx";
-var antibioticsLineNumber = 7;
+var targetFilePath = $@"..\..\..\{targetFileName}.xlsx";
+const int antibioticsLineNumber = 7;
 var antibioticsStartColumn = "M".ExcelColumnNameToNumber();
 var antibioticsEndColumn = "BC".ExcelColumnNameToNumber();
 var sourceWorkbook = new XLWorkbook(fileName);
@@ -27,11 +27,11 @@ for (var a = antibioticsStartColumn; a <= antibioticsEndColumn; a++)
     baseData.Antibiotics.Add(antibioticsRow.GetCellValue(a));
 }
 
-var recordsStartLineNumber = 10;
+const int recordsStartLineNumber = 10;
 var recordsRows = sourceWorkbook.Worksheet(1).RangeUsed().RowsUsed().Skip(recordsStartLineNumber - 1);
-var locationColumn = "H";
-var specimenColumn = "I";
-var organismColumn = "J";
+const string locationColumn = "H";
+const string specimenColumn = "I";
+const string organismColumn = "J";
 
 foreach (var recordsRow in recordsRows)
 {
@@ -113,10 +113,8 @@ foreach (var specimen in baseData.Specimens)
 
     var specimenData = baseData.Records.Where(r => r.Specimen.ToLower() == specimen.ToLower());
 
-    foreach (var organism in baseData.Organisms)
+    foreach (var organismCounter in baseData.Organisms.Select(organism => specimenData.Count(s => s.Organism.ToLower() == organism.OrganismTranslator().ToLower())))
     {
-        var organismCounter = specimenData.Count(s => s.Organism.ToLower() == organism.OrganismTranslator().ToLower());//.Sum(s => s.ResistanceRates.Count);
-
         if (organismCounter > 0)
             specimenSheet
                 .SetCellValue(specimenRowCounter, specimenCellCounter, organismCounter)
@@ -206,10 +204,8 @@ foreach (var specimen in baseData.Specimens)
 
         var specimenLocationData = baseData.Records.Where(r => r.Specimen.ToLower() == specimen.ToLower() && r.Location.ToLower() == location.ToLower());
 
-        foreach (var organism in baseData.Organisms)
+        foreach (var organismCounter in baseData.Organisms.Select(organism => specimenLocationData.Count(s => s.Organism.ToLower() == organism.ToLower())))
         {
-            var organismCounter = specimenLocationData.Count(s => s.Organism.ToLower() == organism.ToLower());//.Sum(s => s.ResistanceRates.Count);
-
             if (organismCounter > 0)
                 specimenLocationSheet
                     .SetCellValue(specimenLocationRowCounter, specimenLocationCellCounter, organismCounter)

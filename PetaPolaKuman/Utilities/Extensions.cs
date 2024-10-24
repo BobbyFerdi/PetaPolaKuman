@@ -13,10 +13,10 @@ public static class Extensions
 
         var sum = 0;
 
-        for (var i = 0; i < columnName.Length; i++)
+        foreach (var col in columnName)
         {
             sum *= 26;
-            sum += columnName[i] - 'A' + 1;
+            sum += col - 'A' + 1;
         }
 
         return sum;
@@ -41,6 +41,6 @@ public static class Extensions
         "staphylococcus hemolyticus" => "Staphylococcus haemolyticus",
         "eschericia coli" => "Escherichia coli",
         "staphyloccous hominis" => "Staphylococcus hominis",
-        _ => input,
+        _ => input
     };
 }

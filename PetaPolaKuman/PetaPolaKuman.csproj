@@ -9,7 +9,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Travewell.Library" Version="1.8.5" />
+		<PackageReference Include="Travewell.Library" Version="1.8.16" />
 	</ItemGroup>
 
 	<ItemGroup>

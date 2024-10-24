@@ -48,7 +48,7 @@ public class ResistanceRates
             new("R", 0),
             new("R", 0),
             new("I", 75),
-            new("S", 100),
+            new("S", 100)
         };
     }
 
