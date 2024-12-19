@@ -76,8 +76,6 @@ foreach (var recordsRow in recordsRows)
 baseData.Organisms = baseData.Organisms.DistinctAndOrder();
 baseData.Specimens = baseData.Specimens.DistinctAndOrder();
 baseData.Locations = baseData.Locations.DistinctAndOrder();
-
-var baseDataJson = StaticJsonHelper.Serialize(baseData);
 logger.LogInformation(StaticJsonHelper.Serialize(baseData));
 
 using var resultWorkbook = new XLWorkbook();
@@ -144,13 +142,10 @@ foreach (var specimen in baseData.Specimens)
 
         if (recordResistanceRates.CheckNotNullAndAny())
         {
-            foreach (var antibiotics in baseData.Antibiotics)
+            foreach (var antibioticsData in baseData.Antibiotics.Select(antibiotics => recordResistanceRates.Where(a => a.Antibiotic.ToLower() == antibiotics.ToLower())))
             {
-                var antibioticsData = recordResistanceRates.Where(a => a.Antibiotic.ToLower() == antibiotics.ToLower());
-
                 if (antibioticsData != null && antibioticsData.Any())
                 {
-                    var sum = antibioticsData.Where(a => a.Antibiotic.ToLower() == antibiotics.ToLower()).Sum(s => s.Value);
                     var average = antibioticsData.Any() ? ((double)(antibioticsData.Sum(s => s.Value) / antibioticsData.Count())).ToInt() : 0;
                     specimenSheet
                         .SetCellValue(specimenRowCounter, specimenCellCounter, average)
@@ -235,13 +230,10 @@ foreach (var specimen in baseData.Specimens)
 
             if (recordResistanceRates.CheckNotNullAndAny())
             {
-                foreach (var antibiotics in baseData.Antibiotics)
+                foreach (var antibioticsData in baseData.Antibiotics.Select(antibiotics => recordResistanceRates.Where(a => a.Antibiotic.ToLower() == antibiotics.ToLower())))
                 {
-                    var antibioticsData = recordResistanceRates.Where(a => a.Antibiotic.ToLower() == antibiotics.ToLower());
-
                     if (antibioticsData != null && antibioticsData.Any())
                     {
-                        var sum = antibioticsData.Where(a => a.Antibiotic.ToLower() == antibiotics.ToLower()).Sum(s => s.Value);
                         var average = antibioticsData.Any() ? ((double)(antibioticsData.Sum(s => s.Value) / antibioticsData.Count())).ToInt() : 0;
                         specimenLocationSheet
                             .SetCellValue(specimenLocationRowCounter, specimenLocationCellCounter, average)

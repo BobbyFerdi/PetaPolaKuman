@@ -2,11 +2,11 @@
 
 public class BaseData
 {
-    public List<string> Antibiotics { get; set; } = new();
-    public List<string> Organisms { get; set; } = new();
-    public List<string> Specimens { get; set; } = new();
-    public List<string> Locations { get; set; } = new();
-    public List<Record> Records { get; set; } = new();
+    public List<string> Antibiotics { get; set; } = [];
+    public List<string> Organisms { get; set; } = [];
+    public List<string> Specimens { get; set; } = [];
+    public List<string> Locations { get; set; } = [];
+    public List<Record> Records { get; set; } = [];
 }
 
 public class Record
@@ -14,7 +14,7 @@ public class Record
     public string Location { get; set; }
     public string Specimen { get; set; }
     public string Organism { get; set; }
-    public List<ResistanceRate> ResistanceRates { get; set; } = new();
+    public List<ResistanceRate> ResistanceRates { get; set; } = [];
 }
 
 public class ResistanceRate
@@ -41,16 +41,16 @@ public class ResistanceRates
 {
     public ResistanceRates()
     {
-        Rates = new List<ResistanceRate>
-        {
+        Rates =
+        [
             new("tidak tercantum dlm taksonomi CLSI", 0),
             new("tidak ada data AST di CLSI", 0),
             new("R", 0),
             new("R", 0),
             new("I", 75),
             new("S", 100)
-        };
+        ];
     }
 
-    public List<ResistanceRate> Rates { get; set; } = new();
+    public List<ResistanceRate> Rates { get; set; } = [];
 }
