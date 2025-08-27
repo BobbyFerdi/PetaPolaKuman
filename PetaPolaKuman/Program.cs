@@ -18,7 +18,7 @@ const int antibioticsLineNumber = 7;
 var antibioticsStartColumn = "M".ExcelColumnNameToNumber();
 var antibioticsEndColumn = "BC".ExcelColumnNameToNumber();
 var sourceWorkbook = new XLWorkbook(fileName);
-var antibioticsRow = sourceWorkbook.Worksheet(1).RangeUsed().RowsUsed().Skip(antibioticsLineNumber - 1).FirstOrDefault();
+var antibioticsRow = sourceWorkbook.Worksheet(position: 1).RangeUsed().RowsUsed().Skip(antibioticsLineNumber - 1).FirstOrDefault();
 var baseData = new BaseData();
 var resistanceRates = new ResistanceRates();
 
@@ -37,7 +37,7 @@ foreach (var recordsRow in recordsRows)
 {
     var organism = recordsRow.GetCellValue(organismColumn).Trim();
 
-    if (organism.ToLower().StartsWith("negatif")) continue;
+    if (organism.StartsWith("negatif", StringComparison.CurrentCultureIgnoreCase)) continue;
 
     organism = organism.OrganismTranslator();
     var specimen = recordsRow.GetCellValue(specimenColumn).Trim();
@@ -109,9 +109,9 @@ foreach (var specimen in baseData.Specimens)
     specimenSheet.SetCellValue(specimenRowCounter, specimenCellCounter, "Number of isolates");
     specimenCellCounter++;
 
-    var specimenData = baseData.Records.Where(r => r.Specimen.ToLower() == specimen.ToLower());
+    var specimenData = baseData.Records.Where(r => string.Equals(r.Specimen, specimen, StringComparison.CurrentCultureIgnoreCase));
 
-    foreach (var organismCounter in baseData.Organisms.Select(organism => specimenData.Count(s => s.Organism.ToLower() == organism.OrganismTranslator().ToLower())))
+    foreach (var organismCounter in baseData.Organisms.Select(organism => specimenData.Count(s => string.Equals(s.Organism, organism.OrganismTranslator(), StringComparison.CurrentCultureIgnoreCase))))
     {
         if (organismCounter > 0)
             specimenSheet
@@ -138,11 +138,11 @@ foreach (var specimen in baseData.Specimens)
     foreach (var organism in baseData.Organisms)
     {
         specimenRowCounter = staticRowCounter;
-        var recordResistanceRates = specimenData.Where(a => a.Organism.ToLower() == organism.ToLower()).SelectMany(o => o.ResistanceRates);
+        var recordResistanceRates = specimenData.Where(a => string.Equals(a.Organism, organism, StringComparison.CurrentCultureIgnoreCase)).SelectMany(o => o.ResistanceRates);
 
         if (recordResistanceRates.CheckNotNullAndAny())
         {
-            foreach (var antibioticsData in baseData.Antibiotics.Select(antibiotics => recordResistanceRates.Where(a => a.Antibiotic.ToLower() == antibiotics.ToLower())))
+            foreach (var antibioticsData in baseData.Antibiotics.Select(antibiotics => recordResistanceRates.Where(a => string.Equals(a.Antibiotic, antibiotics, StringComparison.CurrentCultureIgnoreCase))))
             {
                 if (antibioticsData != null && antibioticsData.Any())
                 {
@@ -197,9 +197,9 @@ foreach (var specimen in baseData.Specimens)
         specimenLocationSheet.SetCellValue(specimenLocationRowCounter, specimenLocationCellCounter, "Number of isolates");
         specimenLocationCellCounter++;
 
-        var specimenLocationData = baseData.Records.Where(r => r.Specimen.ToLower() == specimen.ToLower() && r.Location.ToLower() == location.ToLower());
+        var specimenLocationData = baseData.Records.Where(r => string.Equals(r.Specimen, specimen, StringComparison.CurrentCultureIgnoreCase) && string.Equals(r.Location, location, StringComparison.CurrentCultureIgnoreCase));
 
-        foreach (var organismCounter in baseData.Organisms.Select(organism => specimenLocationData.Count(s => s.Organism.ToLower() == organism.ToLower())))
+        foreach (var organismCounter in baseData.Organisms.Select(organism => specimenLocationData.Count(s => string.Equals(s.Organism, organism, StringComparison.CurrentCultureIgnoreCase))))
         {
             if (organismCounter > 0)
                 specimenLocationSheet
@@ -226,11 +226,11 @@ foreach (var specimen in baseData.Specimens)
         foreach (var organism in baseData.Organisms)
         {
             specimenLocationRowCounter = staticLocationRowCounter;
-            var recordResistanceRates = specimenLocationData.Where(a => a.Organism.ToLower() == organism.ToLower()).SelectMany(o => o.ResistanceRates);
+            var recordResistanceRates = specimenLocationData.Where(a => string.Equals(a.Organism, organism, StringComparison.CurrentCultureIgnoreCase)).SelectMany(o => o.ResistanceRates);
 
             if (recordResistanceRates.CheckNotNullAndAny())
             {
-                foreach (var antibioticsData in baseData.Antibiotics.Select(antibiotics => recordResistanceRates.Where(a => a.Antibiotic.ToLower() == antibiotics.ToLower())))
+                foreach (var antibioticsData in baseData.Antibiotics.Select(antibiotics => recordResistanceRates.Where(a => string.Equals(a.Antibiotic, antibiotics, StringComparison.CurrentCultureIgnoreCase))))
                 {
                     if (antibioticsData != null && antibioticsData.Any())
                     {

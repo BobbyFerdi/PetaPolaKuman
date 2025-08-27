@@ -9,7 +9,8 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Travewell.Library" Version="2.0.3" />
+		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.14.8" />
+		<PackageReference Include="Travewell.Library" Version="2.1.14" />
 	</ItemGroup>
 
 	<ItemGroup>
