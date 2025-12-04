@@ -17,24 +17,15 @@ public class Record
     public List<ResistanceRate> ResistanceRates { get; set; } = [];
 }
 
-public class ResistanceRate
+public class ResistanceRate(string code, string antibiotic, int value)
 {
-    public ResistanceRate(string code, string antibiotic, int value)
+    public ResistanceRate(string code, int value) : this(code, null, value)
     {
-        Code = code;
-        Antibiotic = antibiotic;
-        Value = value;
     }
 
-    public ResistanceRate(string code, int value)
-    {
-        Code = code;
-        Value = value;
-    }
-
-    public string Code { get; set; }
-    public string Antibiotic { get; set; }
-    public int Value { get; set; }
+    public string Code { get; set; } = code;
+    public string Antibiotic { get; set; } = antibiotic;
+    public int Value { get; set; } = value;
 }
 
 public class ResistanceRates
